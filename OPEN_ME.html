@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Happiest Birthday 🌸</title>
+  <meta name="description" content="A starry-night lily card with a surprise box.">
+  <style>
+    :root{
+      --bg1:#0f1021; --bg2:#2b2d42; --accent:#ffd166; --soft:#fffaf0;
+      --lily-pink:#f9b4d7; --lily-cream:#fff7fb;
+      --leaf:#7bc47f; --stem:#3b7a57;
+      --box:#15172e; --boxBorder:#2f3052;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    body{
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 20% 10%, #1b1c31 0%, var(--bg2) 60%, #12131f 100%),
+                  linear-gradient(180deg,#16172b 0%, #0b0d17 100%);
+      color:var(--soft); overflow-x:hidden;
+    }
+    .stars{position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.7;
+      background:
+        radial-gradient(1px 1px at 10% 15%, #ffffff88 50%, transparent 51%),
+        radial-gradient(1px 1px at 30% 25%, #ffffff66 50%, transparent 51%),
+        radial-gradient(1px 1px at 70% 35%, #ffffff99 50%, transparent 51%),
+        radial-gradient(1px 1px at 85% 10%, #ffffff55 50%, transparent 51%),
+        radial-gradient(1px 1px at 50% 60%, #ffffff77 50%, transparent 51%),
+        radial-gradient(1px 1px at 90% 80%, #ffffff44 50%, transparent 51%);
+      animation: twinkle 6s ease-in-out infinite alternate;
+    }
+    @keyframes twinkle{from{filter:brightness(.9)}to{filter:brightness(1.3)}}
+
+    .wrap{position:relative;z-index:1;min-height:100%;display:grid;place-items:center;padding:24px}
+    .card{width:min(960px,92vw);background:linear-gradient(180deg,#1a1b31 0%,#141527 100%);border:1px solid #2f3052;border-radius:28px;box-shadow:0 30px 80px #0007;padding:clamp(18px,2.5vw,28px)}
+    .row{display:grid;gap:clamp(16px,2.5vw,28px);grid-template-columns:1.3fr 1fr;align-items:center}
+    @media (max-width:900px){.row{grid-template-columns:1fr}}
+
+    .handwrite{display:block;height:120px;max-width:100%}
+    .subtitle{opacity:.92;margin:6px 0 14px;font-size:clamp(16px,2.1vw,20px)}
+    .cta-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .btn{appearance:none;border:0;border-radius:14px;padding:12px 18px;font-weight:700;cursor:pointer;background:linear-gradient(180deg,#ffd166,#ffb703);color:#332400;box-shadow:0 10px 24px #0007,inset 0 0 0 1px #0003}
+    .btn:active{transform:translateY(2px) scale(.99)}
+
+    .garden{position:relative;height:min(520px,65vh);width:100%;display:grid;place-items:center;overflow:hidden;border-radius:20px;background:linear-gradient(180deg,#111327 0%,#0b0d1e 100%);outline:1px dashed #ffffff10}
+    svg#bouquet{width:100%;height:100%}
+    .lily-petal{fill:url(#petalGrad);stroke:#f1a7c1;stroke-width:1.2;filter:drop-shadow(0 6px 8px #0009)}
+    .lily-center{fill:#fddde6;stroke:#e48bb0}
+    .stamen{stroke:#c46f96;stroke-width:2;stroke-linecap:round}
+    .anther{fill:#c46f96}
+    .leaf{fill:url(#leafGrad);stroke:#3b7a57;stroke-width:1.2}
+    .stem{stroke:var(--stem);stroke-width:5;stroke-linecap:round}
+    .glow{filter:drop-shadow(0 0 10px #ffb3c6aa)}
+
+    .sway-1,.sway-2{transform-box: fill-box; transform-origin: bottom center;}
+    .sway-1{animation:sway 6s ease-in-out infinite}
+    .sway-2{animation:sway 7.5s ease-in-out -1.2s infinite}
+    @keyframes sway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2.5deg)}}
+
+    .message{margin-top:14px;background:linear-gradient(180deg,#141733,#0f122c);border:1px solid #ffffff15;border-radius:16px;padding:16px;display:none}
+    .message.open{display:block;animation:fadeIn .45s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    .note{font-size:clamp(15px,2.1vw,18px);line-height:1.55;color:#f7f2ff;opacity:.95; white-space: pre-wrap;}
+
+    /* Surprise box */
+    .surprise-wrap{margin-top:16px}
+    .surprise-trigger{
+      width:100%; background:#15172e; border:1px solid #2f3052;
+      border-radius:16px; padding:14px 16px; cursor:pointer;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      box-shadow:0 10px 24px #0005, inset 0 0 0 1px #0002;
+    }
+    .surprise-trigger span{font-weight:800; letter-spacing:.3px}
+    .surprise-trigger .chev{transition:transform .25s ease}
+    .surprise-panel{display:none; background:linear-gradient(180deg,#12142c,#0f1126);
+      border:1px solid #ffffff15; border-radius:16px; padding:16px; margin-top:10px}
+    .surprise-panel.open{display:block; animation:fadeIn .35s ease}
+    .surprise-grid{display:grid; grid-template-columns: 1fr; gap:16px}
+    .gift-svg{width:100%; max-height:300px}
+
+    /* static note card (non-interactive) */
+    .note-card{
+      min-height:90px; padding:12px; border-radius:12px; border:1px solid #ffffff22;
+      background:#0f1227; color:#fff; font-size:16px; line-height:1.5;
+    }
+
+    .fx{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:9}
+    .confetti,.petal{position:absolute;will-change:transform,opacity}
+
+    @media (prefers-reduced-motion: reduce){
+      .sway-1,.sway-2{animation:none !important}
+      .stars{animation:none !important}
+      .confetti,.petal{transition:none !important}
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" aria-hidden="true"></div>
+  <div class="fx" id="fx" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <div class="card" role="region" aria-label="Birthday card">
+      <div class="row">
+        <div>
+          <svg class="handwrite" viewBox="0 0 1200 220" fill="none" aria-label="Happiest Birthday title">
+            <defs>
+              <linearGradient id="gold" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#ffe8a3"/>
+                <stop offset="100%" stop-color="#ffb703"/>
+              </linearGradient>
+            </defs>
+            <title>Happiest Birthday</title>
+            <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="84" font-weight="800" fill="url(#gold)">Happiest Birthday Meghla💛💛</text>
+          </svg>
+
+          <div class="subtitle"><span id="who"></span>— may your day be gentle and bright like lilies at sunrise. ✨</div>
+
+          <div class="cta-row">
+            <button class="btn" id="openBtn" aria-controls="message" aria-expanded="false">Open your message</button>
+          </div>
+
+          <div class="message" id="message" aria-live="polite"><p class="note" id="note"></p></div>
+
+          <!-- New "Open me" surprise box -->
+          <div class="surprise-wrap">
+            <div class="surprise-trigger" id="surpriseTrigger" aria-controls="surprisePanel" aria-expanded="false" role="button" tabindex="0">
+              <span>Open me 🎁</span>
+              <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M7 10l5 5 5-5" stroke="#ffd166" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="surprise-panel" id="surprisePanel">
+              <div class="surprise-grid">
+                <!-- Cake + red roses -->
+ <!-- ★★★ CAKE + REALISTIC RED ROSES ★★★ -->
+<svg class="gift-svg" viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="giftTitle giftDesc">
+  <title id="giftTitle">Chocolate cake with candles and two red roses</title>
+  <desc id="giftDesc">Chocolate cake on a plate, flanked by two red roses with layered petals, swirl centers, and green sepals.</desc>
+
+  <!-- Plate -->
+  <ellipse cx="260" cy="235" rx="130" ry="18" fill="#11162a" stroke="#2f3052"/>
+
+  <!-- Gradients / filters -->
+  <defs>
+    <!-- Cake -->
+    <linearGradient id="cakeGrad3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8b5e3c"/><stop offset="100%" stop-color="#5a3823"/>
+    </linearGradient>
+    <linearGradient id="icingGrad3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#a46b47"/><stop offset="100%" stop-color="#6b4029"/>
+    </linearGradient>
+
+    <!-- Rose reds -->
+    <radialGradient id="roseBody" cx="45%" cy="38%" r="65%">
+      <stop offset="0%"  stop-color="#ff9db0"/>
+      <stop offset="45%" stop-color="#e33248"/>
+      <stop offset="100%" stop-color="#8f0c1b"/>
+    </radialGradient>
+    <linearGradient id="roseEdge3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f05669"/><stop offset="100%" stop-color="#6c0916"/>
+    </linearGradient>
+    <radialGradient id="roseShine" cx="30%" cy="25%" r="35%">
+      <stop offset="0%" stop-color="#ffffffa8"/><stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+
+    <!-- Leaves / sepals -->
+    <linearGradient id="leafFill3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#9ee6a9"/><stop offset="100%" stop-color="#4a9665"/>
+    </linearGradient>
+
+    <!-- Soft bloom glow -->
+    <filter id="bloomGlow3" x="-150%" y="-150%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="1.1" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Cake -->
+  <rect x="190" y="140" width="140" height="78" rx="12" fill="url(#cakeGrad3)" stroke="#3f2a1d"/>
+  <path d="M190 160 q18 16 36 0 t36 0 t36 0 t36 0 v-4 h-144z" fill="url(#icingGrad3)" opacity=".95"/>
+
+  <!-- Candles -->
+  <g>
+    <rect x="218" y="114" width="8" height="28" fill="#f2cf6a"/><ellipse cx="222" cy="110" rx="6" ry="9" fill="#ffd166"/>
+    <rect x="260" y="114" width="8" height="28" fill="#f2cf6a"/><ellipse cx="264" cy="110" rx="6" ry="9" fill="#ffd166"/>
+    <rect x="302" y="114" width="8" height="28" fill="#f2cf6a"/><ellipse cx="306" cy="110" rx="6" ry="9" fill="#ffd166"/>
+  </g>
+
+  <!-- ========= ROSE SHAPE (drawn twice) ========= -->
+  <!-- LEFT ROSE -->
+  <g transform="translate(130,192)" filter="url(#bloomGlow3)">
+    <!-- stem -->
+    <path d="M0,28 C -2,12 -2,-8 0,-26" fill="none" stroke="#2f6b4d" stroke-width="3" stroke-linecap="round"/>
+    <!-- sepals -->
+    <path d="M0,-22 l-8,8 l6,-1 l-3,7 l8,-6 l8,6 l-3,-7 l6,1 z"
+          fill="url(#leafFill3)" stroke="#2f6b4d" stroke-width="1"/>
+    <!-- leaves -->
+    <path d="M-3,-2 C -24,-4 -24,-14 -8,-18 C -18,-12 -16,-6 -3,-2 Z"
+          fill="url(#leafFill3)" stroke="#2f6b4d" stroke-width="1.2"/>
+    <path d="M4,-14 C 22,-16 22,-26 6,-30 C 18,-22 16,-16 4,-14 Z"
+          fill="url(#leafFill3)" stroke="#2f6b4d" stroke-width="1.2"/>
+
+    <!-- OUTER CUP (heart-like top + side petals) -->
+    <path d="M0,-38
+             C 10,-52 30,-52 36,-36
+             C 34,-28 26,-22 16,-18
+             C 9,-16 4,-14 0,-13
+             C -4,-14 -9,-16 -16,-18
+             C -26,-22 -34,-28 -36,-36
+             C -30,-52 -10,-52 0,-38 Z"
+          fill="url(#roseBody)" stroke="url(#roseEdge3)" stroke-width="1.6"/>
+
+    <!-- SIDE WRAP PETALS -->
+    <path d="M-20,-32
+             C -28,-34 -32,-28 -30,-22
+             C -26,-16 -16,-12 -6,-14
+             C -10,-22 -14,-28 -20,-32 Z"
+          fill="url(#roseBody)" stroke="#7a0e1d" stroke-width="1.2"/>
+    <path d="M20,-32
+             C 28,-34 32,-28 30,-22
+             C 26,-16 16,-12 6,-14
+             C 10,-22 14,-28 20,-32 Z"
+          fill="url(#roseBody)" stroke="#7a0e1d" stroke-width="1.2"/>
+
+    <!-- INNER PETALS (cupped) -->
+    <path d="M0,-34
+             C 6,-40 14,-40 18,-34
+             C 12,-30 6,-28 0,-27
+             C -6,-28 -12,-30 -18,-34
+             C -14,-40 -6,-40 0,-34 Z"
+          fill="url(#roseBody)" stroke="#7a0e1d" stroke-width="1.2"/>
+
+    <path d="M0,-30
+             C 5,-34 10,-34 12,-30
+             C 9,-27 5,-26 0,-25
+             C -5,-26 -9,-27 -12,-30
+             C -10,-34 -5,-34 0,-30 Z"
+          fill="url(#roseBody)" stroke="#7a0e1d" stroke-width="1.1"/>
+
+    <!-- highlight + center swirl -->
+    <ellipse rx="18" ry="12" transform="translate(-6,-34)" fill="url(#roseShine)"/>
+    <path d="M-2,-30 q3,-4 8,0 q3,3 -1,5 q-6,2 -7,-3" fill="none" stroke="#f6b0ba" stroke-width="1"/>
+  </g>
+
+  <!-- RIGHT ROSE -->
+  <g transform="translate(390,192)" filter="url(#bloomGlow3)">
+    <path d="M0,28 C -2,12 -2,-8 0,-26" fill="none" stroke="#2f6b4d" stroke-width="3" stroke-linecap="round"/>
+    <path d="M0,-22 l-8,8 l6,-1 l-3,7 l8,-6 l8,6 l-3,-7 l6,1 z"
+          fill="url(#leafFill3)" stroke="#2f6b4d" stroke-width="1"/>
+    <path d="M-3,-2 C -24,-4 -24,-14 -8,-18 C -18,-12 -16,-6 -3,-2 Z"
+          fill="url(#leafFill3)" stroke="#2f6b4d" stroke-width="1.2"/>
+    <path d="M4,-14 C 22,-16 22,-26 6,-30 C 18,-22 16,-16 4,-14 Z"
+          fill="url(#leafFill3)" stroke="#2f6b4d" stroke-width="1.2"/>
+
+    <path d="M0,-38
+             C 10,-52 30,-52 36,-36
+             C 34,-28 26,-22 16,-18
+             C 9,-16 4,-14 0,-13
+             C -4,-14 -9,-16 -16,-18
+             C -26,-22 -34,-28 -36,-36
+             C -30,-52 -10,-52 0,-38 Z"
+          fill="url(#roseBody)" stroke="url(#roseEdge3)" stroke-width="1.6"/>
+
+    <path d="M-20,-32
+             C -28,-34 -32,-28 -30,-22
+             C -26,-16 -16,-12 -6,-14
+             C -10,-22 -14,-28 -20,-32 Z"
+          fill="url(#roseBody)" stroke="#7a0e1d" stroke-width="1.2"/>
+    <path d="M20,-32
+             C 28,-34 32,-28 30,-22
+             C 26,-16 16,-12 6,-14
+             C 10,-22 14,-28 20,-32 Z"
+          fill="url(#roseBody)" stroke="#7a0e1d" stroke-width="1.2"/>
+
+    <path d="M0,-34
+             C 6,-40 14,-40 18,-34
+             C 12,-30 6,-28 0,-27
+             C -6,-28 -12,-30 -18,-34
+             C -14,-40 -6,-40 0,-34 Z"
+          fill="url(#roseBody)" stroke="#7a0e1d" stroke-width="1.2"/>
+
+    <path d="M0,-30
+             C 5,-34 10,-34 12,-30
+             C 9,-27 5,-26 0,-25
+             C -5,-26 -9,-27 -12,-30
+             C -10,-34 -5,-34 0,-30 Z"
+          fill="url(#roseBody)" stroke="#7a0e1d" stroke-width="1.1"/>
+
+    <ellipse rx="18" ry="12" transform="translate(-6,-34)" fill="url(#roseShine)"/>
+    <path d="M-2,-30 q3,-4 8,0 q3,3 -1,5 q-6,2 -7,-3" fill="none" stroke="#f6b0ba" stroke-width="1"/>
+  </g>
+</svg>
+
+                <!-- NON-INTERACTIVE NOTE AREA -->
+                <div class="note-card">
+                  We may not have been close enough all these years, but I wish I could celebrate your birthday with you. Just so you know how geeked I am, I have been working on this for a month now, learned a whole new language that cooked my brain... but anything for you. I wish you all the best. I have always prayed good for you with or without me and I will always keep on doing so. You have made this space for yourself in my heart and it will always be yours. I wish you the best day today and the ones that are coming next
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="garden" aria-label="Lily bouquet illustration">
+            <svg id="bouquet" viewBox="0 0 800 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="bouquetTitle bouquetDesc">
+              <title id="bouquetTitle">Two pink lilies swaying</title>
+              <desc id="bouquetDesc">Stylized bouquet with two lilies, green leaves, and softly twinkling background stars.</desc>
+              <defs>
+                <linearGradient id="petalGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="var(--lily-cream)"/>
+                  <stop offset="100%" stop-color="var(--lily-pink)"/>
+                </linearGradient>
+                <linearGradient id="leafGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#95e1a0"/>
+                  <stop offset="100%" stop-color="#4f9d69"/>
+                </linearGradient>
+                <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="6" result="blur"/>
+                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              </defs>
+
+              <g>
+                <path class="stem sway-2" d="M360 480 Q 352 380 360 300 Q 365 260 360 220" />
+                <path class="stem sway-1" d="M440 480 Q 448 380 440 300 Q 435 260 440 220" />
+              </g>
+
+              <g opacity=".95">
+                <path class="leaf sway-2" d="M352 330 C 314 310, 288 285, 275 255 C 314 265, 332 280, 354 305 Z"/>
+                <path class="leaf sway-2" d="M362 360 C 392 366, 420 375, 455 388 C 416 388, 392 380, 362 374 Z"/>
+                <path class="leaf sway-1" d="M448 325 C 486 305, 512 280, 528 250 C 500 262, 478 280, 450 305 Z"/>
+                <path class="leaf sway-1" d="M438 355 C 408 362, 380 372, 347 386 C 384 382, 407 375, 438 370 Z"/>
+              </g>
+
+              <g filter="url(#softGlow)">
+                <!-- Right flower -->
+                <g class="sway-1">
+                  <g transform="translate(450,190)">
+                    <g class="glow">
+                      <ellipse class="lily-petal" rx="58" ry="26" transform="rotate(0) translate(0,-36)"/>
+                      <ellipse class="lily-petal" rx="58" ry="26" transform="rotate(72) translate(0,-36)"/>
+                      <ellipse class="lily-petal" rx="58" ry="26" transform="rotate(144) translate(0,-36)"/>
+                      <ellipse class="lily-petal" rx="58" ry="26" transform="rotate(216) translate(0,-36)"/>
+                      <ellipse class="lily-petal" rx="58" ry="26" transform="rotate(288) translate(0,-36)"/>
+                      <circle class="lily-center" r="12"/>
+                      <g>
+                        <line class="stamen" x1="0" y1="0" x2="0" y2="-40"/><circle class="anther" cx="0" cy="-40" r="4"/>
+                        <line class="stamen" x1="-6" y1="0" x2="-18" y2="-36"/><circle class="anther" cx="-18" cy="-36" r="3.5"/>
+                        <line class="stamen" x1="6" y1="0" x2="18" y2="-36"/><circle class="anther" cx="18" cy="-36" r="3.5"/>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+
+                <!-- Left flower -->
+                <g class="sway-2">
+                  <g transform="translate(360,190)">
+                    <g class="glow">
+                      <ellipse class="lily-petal" rx="58" ry="26" transform="rotate(0) translate(0,-36)"/>
+                      <ellipse class="lily-petal" rx="58" ry="26" transform="rotate(72) translate(0,-36)"/>
+                      <ellipse class="lily-petal" rx="58" ry="26" transform="rotate(144) translate(0,-36)"/>
+                      <ellipse class="lily-petal" rx="58" ry="26" transform="rotate(216) translate(0,-36)"/>
+                      <ellipse class="lily-petal" rx="58" ry="26" transform="rotate(288) translate(0,-36)"/>
+                      <circle class="lily-center" r="12"/>
+                      <g>
+                        <line class="stamen" x1="0" y1="0" x2="0" y2="-40"/><circle class="anther" cx="0" cy="-40" r="4"/>
+                        <line class="stamen" x1="-6" y1="0" x2="-18" y2="-36"/><circle class="anther" cx="-18" cy="-36" r="3.5"/>
+                        <line class="stamen" x1="6" y1="0" x2="18" y2="-36"/><circle class="anther" cx="18" cy="-36" r="3.5"/>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function(){
+    const RECIPIENT_NAME = "Meghla";
+    const SENDER_NAME = "— Yours always";
+    const PERSONAL_MESSAGE = `
+      Happiest Birthday ${RECIPIENT_NAME}!
+
+      You light up the world the way lilies brighten a quiet garden — gracefully, gently, and with a beauty that never tries too hard. Wish you a year of change, growth and a better future. I may not have been there for the years that has passed but I have not forgotten you for once.
+
+      ${SENDER_NAME} 💛
+    `;
+
+    const whoEl = document.getElementById('who');
+    const openBtn = document.getElementById('openBtn');
+    const msg = document.getElementById('message');
+    const noteEl = document.getElementById('note');
+    const fx = document.getElementById('fx');
+
+    if (whoEl) whoEl.textContent = RECIPIENT_NAME;
+
+    // Open message also showers lilies
+    if (openBtn){
+      openBtn.addEventListener('click', () => {
+        const isOpen = msg.classList.toggle('open');
+        openBtn.setAttribute('aria-expanded', String(isOpen));
+        openBtn.textContent = isOpen ? 'Close message' : 'Open your message';
+        if (isOpen){
+          noteEl.textContent = PERSONAL_MESSAGE;
+          confetti(140);
+          petalShower(70);
+        } else {
+          noteEl.textContent = "";
+        }
+      });
+    }
+
+    // Surprise box
+    const surpriseTrigger = document.getElementById('surpriseTrigger');
+    const surprisePanel = document.getElementById('surprisePanel');
+    const chev = surpriseTrigger?.querySelector('.chev');
+
+    function toggleSurprise(){
+      const open = !surprisePanel.classList.contains('open');
+      surprisePanel.classList.toggle('open', open);
+      surpriseTrigger.setAttribute('aria-expanded', String(open));
+      if (chev) chev.style.transform = open ? 'rotate(180deg)' : 'rotate(0deg)';
+      if (open) confetti(80);
+    }
+    if (surpriseTrigger && surprisePanel){
+      surpriseTrigger.addEventListener('click', toggleSurprise);
+      surpriseTrigger.addEventListener('keydown', (e)=>{ if (e.key==='Enter'||e.key===' '){ e.preventDefault(); toggleSurprise(); }});
+    }
+
+    // Confetti & petals
+    function confetti(count = 120){
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduceMotion) return;
+      for(let i=0;i<count;i++){
+        const c = document.createElement('div');
+        c.className = 'confetti';
+        const size = 6 + Math.random()*8;
+        Object.assign(c.style, {
+          left: (Math.random()*100)+'vw',
+          top: (-10 - Math.random()*20)+'vh',
+          width: size+'px', height: size+'px',
+          background: `hsl(${Math.random()*360}, 90%, 60%)`,
+          transform: 'translateY(0) rotate(0deg)',
+          borderRadius: Math.random()>.5 ? '50%' : '4px'
+        });
+        fx.appendChild(c);
+        const fall = 60 + Math.random()*40;
+        const drift = (Math.random()*2-1)*40;
+        const rot = (Math.random()*720-360);
+        c.animate([
+          { transform:'translate(0,0) rotate(0deg)', opacity:1 },
+          { transform:`translate(${drift}px, ${fall}vh) rotate(${rot}deg)`, opacity:0.9 }
+        ], { duration: 3200 + Math.random()*2200, easing:'cubic-bezier(.2,.6,.3,1)', fill:'forwards' });
+        setTimeout(()=>c.remove(), 6000);
+      }
+    }
+
+    function petalShower(count = 40){
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduceMotion) return;
+      for(let i=0;i<count;i++){
+        const p = document.createElement('div');
+        p.className = 'petal';
+        const w = 22 + Math.random()*16;
+        const h = w*0.5;
+        const hue = 330 + Math.random()*20; // pinkish
+        Object.assign(p.style, {
+          left: (Math.random()*100)+'vw',
+          top: (-5 - Math.random()*15)+'vh',
+          width: w+'px', height: h+'px',
+          background: `linear-gradient(145deg, hsl(${hue}, 95%, 97%), hsl(${hue}, 80%, 85%))`,
+          borderRadius: `${w}px ${w}px ${w/3}px ${w/3}px`,
+          boxShadow: '0 6px 10px #0006',
+          transform: 'rotate(0deg)'
+        });
+        fx.appendChild(p);
+        const fall = 70 + Math.random()*45;
+        const drift = (Math.random()*2-1)*60;
+        const rot = (Math.random()*360-180);
+        p.animate([
+          { transform:'translate(0,0) rotate(0deg)', opacity:1 },
+          { transform:`translate(${drift}px, ${fall}vh) rotate(${rot}deg)`, opacity:0 }
+        ], { duration: 4200 + Math.random()*2400, easing:'cubic-bezier(.2,.6,.3,1)', fill:'forwards' });
+        setTimeout(()=>p.remove(), 7000);
+      }
+    }
+  });
+  </script>
+</body>
+</html>
